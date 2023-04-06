@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  user_id      String @unique @default(uuid())
+  name         String
+  duration     String
+  no_of_people Int
+  packag       packag @relation(fields: [packag_id], references: [package_id])
+  packag_id    String
+}
+
+model hotel {
+  hotel_id   String   @unique @default(uuid())
+  hotel_name String   @unique
+  amount     Int?
+  days       Int?
+  packag     packag[]
+}
+
+model restaurant {
+  restaurant_id   String   @unique @default(uuid())
+  amount          Int?
+  restaurant_name String   @unique
+  days            Int?
+  packag          packag[]
+}
+
+model place {
+  place_id   String   @unique @default(uuid())
+  amount     Int?
+  days       Int?
+  place_name String   @unique
+  packag     packag[]
+}
+
+model packag {
+  package_id    String     @unique @default(uuid())
+  hotel         hotel      @relation(fields: [hotel_id], references: [hotel_id])
+  hotel_id      String
+  place         place      @relation(fields: [place_id], references: [place_id])
+  place_id      String
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [restaurant_id])
+  restaurant_id String
+  user          user[]
+}
